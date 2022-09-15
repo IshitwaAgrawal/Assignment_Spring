@@ -18,14 +18,7 @@ public class UserController {
     @Autowired
     private ProductService productService;
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO){
-        try{
-            return ResponseEntity.ok(service.login(loginDTO));
-        }catch (Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
+
 
     @GetMapping("/getAllProducts")
     public ResponseEntity<?> getAll(){

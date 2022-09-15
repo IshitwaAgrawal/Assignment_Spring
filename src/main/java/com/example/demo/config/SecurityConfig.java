@@ -18,9 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
     @Bean
@@ -30,13 +27,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth)throws Exception{
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+//        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth.inMemoryAuthentication()
+                .withUser("admin")
+                .password("admin")
+                .roles("admin").and()
+                .withUser("user")
+                .password("user")
+                .roles("user").and()
+                .withUser("user2")
+                .password("user2")
+                .roles("user");
     }
 
     @Override
     protected void configure(HttpSecurity http)throws Exception{
         http.cors().and().csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/getAllProducts").hasAnyAuthority("user","admin")
+                .antMatchers("/getProducts/**").hasAnyAuthority("admin")
                 .anyRequest()
                 .permitAll().and()
                 .sessionManagement()

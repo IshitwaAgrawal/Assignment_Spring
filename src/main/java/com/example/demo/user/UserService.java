@@ -16,8 +16,6 @@ public class UserService {
     @Autowired
     private UserRepository repository;
     @Autowired
-    private UserService userService;
-    @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtUtil jwtUtil;
@@ -46,13 +44,6 @@ public class UserService {
         }
     }
 
-    public User saveUser(User user){
-        return repository.save(user);
-    }
-
-    public User findById(Long userid){
-        return repository.findUserById(userid);
-    }
 
     public String login(LoginDTO loginDTO)throws Exception {
         try{
@@ -65,8 +56,7 @@ public class UserService {
         }catch (Exception e){
             throw new Exception("Login Error!");
         }
-        final UserDetails userDetails = userService.loadByUsername(loginDTO.getUsername());
-        String token = jwtUtil.generateToken(userDetails);
-        return token;
+        final UserDetails userDetails = loadByUsername(loginDTO.getUsername());
+        return jwtUtil.generateToken(userDetails);
     }
 }
